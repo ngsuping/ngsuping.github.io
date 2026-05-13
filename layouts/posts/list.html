@@ -1,0 +1,92 @@
+{{ define "main" }}
+  {{/* Header */}}
+  <header>
+    {{ if .Params.showBreadcrumbs | default (site.Params.list.showBreadcrumbs | default false) }}
+      {{ partial "breadcrumbs.html" . }}
+    {{ end }}
+    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+    <div class="mt-1 mb-2 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+      {{ partial "article-meta/list.html" (dict "context" . "scope" "single") }}
+    </div>
+  </header>
+
+  {{/* 2-column layout: left sidebar (series) + right (posts list) */}}
+  <div class="mt-8 flex flex-col lg:flex-row lg:gap-10">
+
+    {{/* Left sidebar: Series navigation */}}
+    <aside class="lg:w-64 lg:flex-shrink-0 lg:order-first">
+      {{ $topClass := cond (hasPrefix site.Params.header.layout "fixed") "lg:top-[140px]" "lg:top-10" }}
+      <div class="lg:sticky {{ $topClass }} mb-8 lg:mb-0">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-3">
+          {{ if eq .Language.Lang "zh-cn" }}系列{{ else }}Series{{ end }}
+        </h2>
+        <nav>
+          <ul class="space-y-1">
+            {{ $currentLang := .Language.Lang }}
+            {{ range $term, $taxonomy := site.Taxonomies.series }}
+              {{ $seriesPage := site.GetPage (printf "/series/%s" $term) }}
+              {{ if $seriesPage }}
+                <li>
+                  <a href="{{ $seriesPage.RelPermalink }}"
+                     class="block px-3 py-2 rounded-md text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                    <div class="font-medium">{{ $seriesPage.Title }}</div>
+                    {{ with $seriesPage.Params.description }}
+                      <div class="text-xs text-neutral-500 dark:text-neutral-500 mt-0.5 line-clamp-2">{{ . }}</div>
+                    {{ end }}
+                    <div class="text-xs text-neutral-400 dark:text-neutral-600 mt-1">
+                      {{ len $taxonomy.Pages }} {{ if eq $currentLang "zh-cn" }}篇{{ else }}post{{ if ne (len $taxonomy.Pages) 1 }}s{{ end }}{{ end }}
+                    </div>
+                  </a>
+                </li>
+              {{ end }}
+            {{ end }}
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    {{/* Right column: description + post list */}}
+    <div class="flex-1 min-w-0">
+      {{/* Description from _index.md */}}
+      {{ if .Content }}
+        <div class="prose dark:prose-invert max-w-none mb-8">
+          {{ .Content }}
+        </div>
+      {{ end }}
+
+      {{/* Article list */}}
+      {{ if gt .Pages 0 }}
+        {{ $cardView := .Params.cardView | default (site.Params.list.cardView | default false) }}
+        {{ $groupByYear := .Params.groupByYear | default (site.Params.list.groupByYear | default false) }}
+
+        {{ if $cardView }}
+          {{ if $groupByYear }}
+            {{ range (.Paginate (.Pages.GroupByDate "2006")).PageGroups }}
+              <h2 class="mt-8 mb-3 text-2xl font-bold text-neutral-700 dark:text-neutral-300">{{ .Key }}</h2>
+              <section class="grid gap-4 sm:grid-cols-2 mb-8">
+                {{ range .Pages }}
+                  {{ partial "article-link/card.html" . }}
+                {{ end }}
+              </section>
+            {{ end }}
+          {{ else }}
+            <section class="grid gap-4 sm:grid-cols-2">
+              {{ range (.Paginate .Pages).Pages }}
+                {{ partial "article-link/card.html" . }}
+              {{ end }}
+            </section>
+          {{ end }}
+        {{ else }}
+          <section class="space-y-6">
+            {{ range (.Paginate .Pages).Pages }}
+              {{ partial "article-link/simple.html" . }}
+            {{ end }}
+          </section>
+        {{ end }}
+
+        {{ partial "pagination.html" . }}
+      {{ end }}
+    </div>
+
+  </div>
+{{ end }}

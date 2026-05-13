@@ -1,0 +1,22 @@
+locale = "en"
+label = "English"
+weight = 2
+title = "NG SU PING"
+
+[params]
+  displayName = "English"        # used only as language-switcher label
+  isoCode = "en"
+  rtl = false
+  dateFormat = "Jan 2, 2006"
+  description = "Business Analyst at Meituan — data analysis & AI notes, plus project case studies."
+
+[params.author]
+  name = "NG SU PING"
+  # image = "img/avatar.png"  # uncomment after dropping avatar.png into assets/img/
+  headline = "Business Analyst @ Meituan"
+  bio = "Hi! I'm a data / business analyst. Here you'll find my projects, daily notes on data analysis and AI, and notes from job interviews."
+  links = [
+    { email = "mailto:ng.suping99@gmail.com" },
+    { linkedin = "https://www.linkedin.com/in/ngsuping" },
+    { github = "https://github.com/ngsuping" },
+  ]
