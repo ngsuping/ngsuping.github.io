@@ -5,7 +5,7 @@ colorScheme = "muji"
 defaultAppearance = "light"   # MUJI feel is light by default
 autoSwitchAppearance = true   # but allow dark-mode users to switch
 
-enableA11y = true
+enableA11y = false
 enableSearch = true
 enableCodeCopy = true
 enableStructuredBreadcrumbs = true
@@ -35,11 +35,8 @@ fingerprintAlgorithm = "sha512"
   showScrollToTop = true
 
 [homepage]
-  layout = "profile"
-  showRecent = true
-  showRecentItems = 5
-  showMoreLink = true
-  showMoreLinkDest = "posts"
+  layout = "custom"
+  showRecent = false
   cardView = true
   cardViewScreenWidth = false
 

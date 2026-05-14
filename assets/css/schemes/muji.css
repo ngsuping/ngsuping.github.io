@@ -1,10 +1,10 @@
-/* MUJI scheme — warm almond / cream / brown palette (v3 — lifted one notch toward white) */
+/* MUJI scheme — warm almond / cream / brown palette (v4 — body bg matches mockup #FAFAF8) */
 :root {
-  --color-neutral: 250, 246, 238;
+  --color-neutral: 250, 250, 248;
 
-  /* Neutral — warm beige scale, lifted brighter to reduce yellow */
-  --color-neutral-50: 250, 246, 238;   /* #FAF6EE light cream — main background */
-  --color-neutral-100: 244, 237, 222;  /* #F4EDDE soft cream — cards */
+  /* Neutral — almost neutral off-white at lightest, with warm browns deeper down */
+  --color-neutral-50: 250, 250, 248;   /* #FAFAF8 — main background (matches homepage mockup) */
+  --color-neutral-100: 245, 244, 241;  /* #F5F4F1 — cards / subtle surface */
   --color-neutral-200: 230, 219, 195;  /* #E6DBC3 sand */
   --color-neutral-300: 213, 196, 166;  /* #D5C4A6 warm sand */
   --color-neutral-400: 178, 145, 102;  /* #B29166 tan */
