@@ -1,0 +1,9 @@
+{{ define "main" }}
+{{ $zh := eq .Language.Lang "zh-cn" }}
+{{ $postsURL := absURL "posts/" }}
+<meta http-equiv="refresh" content="0; url={{ $postsURL }}">
+<script>window.location.href = "{{ $postsURL }}";</script>
+<p class="text-sm text-neutral-500 dark:text-neutral-400">
+  {{ if $zh }}正在跳转到笔记页... <a href="{{ $postsURL }}">点击这里</a>{{ else }}Redirecting to notes... <a href="{{ $postsURL }}">click here</a>{{ end }}
+</p>
+{{ end }}
