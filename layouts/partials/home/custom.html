@@ -83,6 +83,30 @@
   .hp-pill:hover { background: var(--hp-surface-2); color: var(--hp-text); }
   .hp-pill svg { width: 14px; height: 14px; }
 
+  /* WeChat hover popup (homepage) */
+  .hp-wechat-wrap { position: relative; display: inline-flex; }
+  .hp-wechat-popup {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--hp-surface);
+    border: 0.5px solid var(--hp-border-md);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    z-index: 10;
+    text-align: center;
+  }
+  .hp-wechat-wrap:hover .hp-wechat-popup,
+  .hp-wechat-wrap:focus-within .hp-wechat-popup { display: block; }
+  .hp-wechat-popup::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--hp-border-md); }
+  .hp-wechat-popup::before { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--hp-surface); z-index: 1; margin-top: -1px; }
+  .hp-wechat-qr { width: 140px; height: 140px; background: var(--hp-surface-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; overflow: hidden; }
+  .hp-wechat-qr img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .hp-wechat-label { font-size: 11px; color: var(--hp-text-3); white-space: nowrap; }
+
   /* STATS */
   .hp-stats {
     display: grid; grid-template-columns: repeat(4, 1fr);
@@ -234,8 +258,20 @@
           {{ partial "icon.html" "linkedin" }} LinkedIn
         </a>
         <a class="hp-pill" href="mailto:{{ $email }}">
-          {{ partial "icon.html" "email" }} {{ if $zh }}联系我{{ else }}Email{{ end }}
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="11" rx="1.5"/><polyline points="3 6 10 11 17 6"/></svg> {{ if $zh }}邮箱{{ else }}Email{{ end }}
         </a>
+        <div class="hp-wechat-wrap" tabindex="0">
+          <div class="hp-pill" role="button">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M8 3C4.7 3 2 5.2 2 8c0 1.6.9 3 2.2 4l-.5 1.5L5.5 12c.8.2 1.6.3 2.5.3h.5c-.3-.6-.5-1.3-.5-2 0-2.8 2.7-5 6-5h.5C13.5 3.8 11 3 8 3zm-2 3.5a.7.7 0 1 1 0 1.4.7.7 0 0 1 0-1.4zm4 0a.7.7 0 1 1 0 1.4.7.7 0 0 1 0-1.4zm4 4c-2.8 0-5 1.7-5 4 0 1.3.7 2.4 1.8 3.2L10.5 19l1.5-.8c.4.1.8.2 1.2.2 2.8 0 5-1.7 5-4s-2.2-3.9-5-3.9zm-1.5 1.5a.6.6 0 1 1 0 1.2.6.6 0 0 1 0-1.2zm3 0a.6.6 0 1 1 0 1.2.6.6 0 0 1 0-1.2z"/></svg>
+            {{ if $zh }}微信{{ else }}WeChat{{ end }}
+          </div>
+          <div class="hp-wechat-popup">
+            <div class="hp-wechat-qr">
+              <img src="/img/wechat-qr.png" alt="{{ if $zh }}微信二维码{{ else }}WeChat QR{{ end }}">
+            </div>
+            <div class="hp-wechat-label">{{ if $zh }}扫码添加微信{{ else }}Scan to add me{{ end }}</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -400,7 +436,7 @@
       {{ if $zh }}对数据分析 / AI 应用合作机会保持开放{{ else }}Open to chats on data analysis / AI collaboration{{ end }}
     </div>
     <a class="hp-cta-btn" href="mailto:{{ $email }}">
-      {{ partial "icon.html" "email" }} {{ if $zh }}发邮件给我{{ else }}Send email{{ end }}
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="11" rx="1.5"/><polyline points="3 6 10 11 17 6"/></svg> {{ if $zh }}发邮件{{ else }}Send email{{ end }}
     </a>
   </div>
 
