@@ -1,0 +1,245 @@
+{{ define "main" }}
+{{ $zh := eq .Language.Lang "zh-cn" }}
+{{ $postsPage := site.GetPage "/posts/" }}
+
+<style>
+  .post {
+    --color-text-primary: #1A1A18;
+    --color-text-secondary: #6B6B65;
+    --color-text-tertiary: #A8A8A2;
+    --color-border-secondary: rgba(0,0,0,0.12);
+    --color-border-tertiary: rgba(0,0,0,0.08);
+    --color-background-primary: #FFFFFF;
+    --color-background-secondary: #F5F4F1;
+    --font-serif: 'Noto Serif SC', 'Songti SC', Georgia, serif;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 1rem 0 3rem;
+    color: var(--color-text-secondary);
+  }
+  .post * { box-sizing: border-box; }
+
+  /* BACK */
+  .post .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--color-text-tertiary);
+    text-decoration: none; margin-bottom: 2rem;
+    transition: color 0.15s;
+  }
+  .post .back-btn:hover { color: var(--color-text-secondary); }
+  .post .back-btn svg { flex-shrink: 0; }
+
+  /* HEADER */
+  .post .post-series-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; color: #1a56db;
+    background: #EEF3FC; padding: 3px 10px;
+    border-radius: 20px; margin-bottom: 12px;
+    text-decoration: none;
+  }
+  .post .post-series-badge:hover { opacity: 0.85; }
+  .post .post-title {
+    font-size: 24px; font-weight: 500;
+    color: var(--color-text-primary);
+    line-height: 1.35; margin: 0 0 12px;
+    font-family: var(--font-serif);
+  }
+  .post .post-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--color-text-tertiary);
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .post .post-desc {
+    font-size: 14px; color: var(--color-text-secondary);
+    line-height: 1.7; border-left: 2px solid var(--color-border-secondary);
+    padding-left: 14px; margin-bottom: 0;
+  }
+
+  .post hr { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.75rem 0; }
+
+  /* CONTENT */
+  .post .post-content { font-size: 15px; line-height: 1.9; color: var(--color-text-secondary); }
+  .post .post-content h1,
+  .post .post-content h2 { font-size: 17px; font-weight: 500; color: var(--color-text-primary); margin: 1.75rem 0 0.75rem; }
+  .post .post-content h3 { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin: 1.4rem 0 0.6rem; }
+  .post .post-content p { margin-bottom: 1.2rem; }
+  .post .post-content a { color: #1a56db; text-decoration: underline; text-decoration-thickness: 0.5px; text-underline-offset: 3px; }
+  .post .post-content a:hover { opacity: 0.85; }
+  .post .post-content blockquote {
+    border-left: 2px solid var(--color-border-secondary);
+    padding: 4px 0 4px 14px;
+    margin: 1.2rem 0;
+    color: var(--color-text-secondary);
+    font-style: normal;
+  }
+  .post .post-content code {
+    font-size: 13px; background: var(--color-background-secondary);
+    padding: 2px 6px; border-radius: 4px;
+    color: var(--color-text-primary);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .post .post-content pre {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 10px; padding: 1rem 1.25rem;
+    overflow-x: auto; margin: 1.25rem 0;
+  }
+  .post .post-content pre code {
+    background: none; padding: 0;
+    font-size: 13px; line-height: 1.7;
+    color: var(--color-text-primary);
+  }
+  .post .post-content ul,
+  .post .post-content ol { padding-left: 1.25rem; margin-bottom: 1.2rem; }
+  .post .post-content li { margin-bottom: 0.4rem; }
+  .post .post-content strong { color: var(--color-text-primary); font-weight: 500; }
+  .post .post-content img { border-radius: 8px; max-width: 100%; height: auto; }
+
+  /* TAGS */
+  .post .post-tags { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 1.5rem; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 2rem; }
+  .post .post-tag {
+    font-size: 11px; color: var(--color-text-tertiary);
+    background: var(--color-background-secondary);
+    padding: 4px 10px; border-radius: 20px;
+    text-decoration: none;
+  }
+  .post .post-tag:hover { color: var(--color-text-secondary); }
+
+  /* PREV NEXT */
+  .post .post-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1.5rem; }
+  .post .nav-card {
+    padding: 14px 16px; border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 10px; text-decoration: none;
+    transition: border-color 0.15s;
+    display: block;
+  }
+  .post .nav-card:hover { border-color: var(--color-border-secondary); }
+  .post .nav-card.right { text-align: right; }
+  .post .nav-dir { font-size: 11px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 4px; margin-bottom: 5px; }
+  .post .nav-card.right .nav-dir { justify-content: flex-end; }
+  .post .nav-title { font-size: 13px; color: var(--color-text-primary); line-height: 1.4; }
+
+  /* BACK TOP */
+  .post .back-top { display: flex; justify-content: center; margin-top: 2rem; }
+  .post .back-top a { font-size: 12px; color: var(--color-text-tertiary); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+  .post .back-top a:hover { color: var(--color-text-secondary); }
+
+  /* Dark mode */
+  .dark .post {
+    --color-text-primary: #F0E5D0;
+    --color-text-secondary: #C9B690;
+    --color-text-tertiary: #8B7A5C;
+    --color-border-secondary: rgba(255,255,255,0.18);
+    --color-border-tertiary: rgba(255,255,255,0.10);
+    --color-background-secondary: rgba(255,255,255,0.06);
+  }
+  .dark .post .post-series-badge { background: rgba(125, 169, 255, 0.10); color: #7da9ff; }
+  .dark .post .post-content a { color: #7da9ff; }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .post .post-nav { grid-template-columns: 1fr; }
+    .post .nav-card.right { text-align: left; }
+    .post .nav-card.right .nav-dir { justify-content: flex-start; }
+  }
+</style>
+
+<article class="post">
+
+  {{/* BACK */}}
+  <a class="back-btn" href="{{ $postsPage.RelPermalink }}">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    {{ if $zh }}返回笔记{{ else }}Back to notes{{ end }}
+  </a>
+
+  {{/* SERIES BADGE */}}
+  {{ with .Params.series }}
+    {{ $slug := index . 0 }}
+    {{ with site.GetPage (printf "/series/%s" $slug) }}
+      <div>
+        <a href="{{ .RelPermalink }}" class="post-series-badge">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          {{ .Title }}
+        </a>
+      </div>
+    {{ end }}
+  {{ end }}
+
+  {{/* TITLE */}}
+  <h1 class="post-title">{{ .Title }}</h1>
+
+  {{/* META */}}
+  <div class="post-meta">
+    <span>{{ .Date.Format "2006.01.02" }}</span>
+    {{ if .ReadingTime }}
+      <span>·</span>
+      <span>{{ .ReadingTime }} {{ if $zh }}分钟阅读{{ else }}min read{{ end }}</span>
+    {{ end }}
+    {{ with .Params.tags }}
+      <span>·</span>
+      <span>{{ delimit . " · " }}</span>
+    {{ end }}
+  </div>
+
+  {{/* DESCRIPTION / SUMMARY */}}
+  {{ $desc := .Description }}
+  {{ if not $desc }}{{ $desc = .Params.summary }}{{ end }}
+  {{ with $desc }}
+    <div class="post-desc">{{ . }}</div>
+  {{ end }}
+
+  <hr>
+
+  {{/* CONTENT */}}
+  <div class="post-content">
+    {{ .Content }}
+  </div>
+
+  {{/* TAGS */}}
+  {{ with .Params.tags }}
+    <div class="post-tags">
+      {{ range . }}
+        <a href="{{ printf "/tags/%s/" (. | urlize) | relLangURL }}" class="post-tag"># {{ . }}</a>
+      {{ end }}
+    </div>
+  {{ end }}
+
+  {{/* PREV / NEXT */}}
+  {{ if or .NextInSection .PrevInSection }}
+    <div class="post-nav">
+      {{ with .NextInSection }}
+        <a class="nav-card" href="{{ .RelPermalink }}">
+          <div class="nav-dir">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            {{ if $zh }}上一篇{{ else }}Previous{{ end }}
+          </div>
+          <div class="nav-title">{{ .Title }}</div>
+        </a>
+      {{ else }}
+        <div></div>
+      {{ end }}
+      {{ with .PrevInSection }}
+        <a class="nav-card right" href="{{ .RelPermalink }}">
+          <div class="nav-dir">
+            {{ if $zh }}下一篇{{ else }}Next{{ end }}
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div class="nav-title">{{ .Title }}</div>
+        </a>
+      {{ else }}
+        <div></div>
+      {{ end }}
+    </div>
+  {{ end }}
+
+  {{/* BACK TO TOP */}}
+  <div class="back-top">
+    <a href="#">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      {{ if $zh }}返回顶部{{ else }}Back to top{{ end }}
+    </a>
+  </div>
+
+</article>
+
+{{ end }}

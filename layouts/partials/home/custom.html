@@ -39,16 +39,18 @@
     border-bottom: 0.5px solid var(--hp-border);
   }
   .hp-avatar {
-    width: 72px; height: 72px;
-    border-radius: 50%;
+    width: 96px; height: 96px;
+    border-radius: 18px;
     background: var(--hp-accent-bg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    color: var(--hp-accent);
     border: 0.5px solid var(--hp-border);
     flex-shrink: 0;
-    font-family: 'Noto Serif SC', 'Songti SC', serif;
-    font-weight: 400;
+    overflow: hidden;
+  }
+  .hp-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
   }
   .hp-name {
     font-size: 28px; font-weight: 400;
@@ -235,7 +237,7 @@
 
   {{/* HERO */}}
   <section class="hp-hero">
-    <div class="hp-avatar">{{ if $zh }}溯{{ else }}S{{ end }}</div>
+    <div class="hp-avatar"><img src="/img/avatar.png" alt="{{ if $zh }}黄溯萍{{ else }}NG SU PING{{ end }}"></div>
     <div>
       <h1 class="hp-name">{{ if $zh }}黄溯萍{{ else }}NG SU PING{{ end }}</h1>
       <div class="hp-role">{{ if $zh }}商业分析师 @ 美团 · 北京{{ else }}Business Analyst @ Meituan · Beijing{{ end }}</div>

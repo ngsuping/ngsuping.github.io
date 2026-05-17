@@ -19,11 +19,57 @@
   }
   .ab * { box-sizing: border-box; }
 
-  .ab-hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; margin-bottom: 2.5rem; }
-  .ab-av { width: 72px; height: 72px; border-radius: 50%; overflow: hidden; border: 0.5px solid var(--color-border-tertiary); flex-shrink: 0; }
-  .ab-av svg { width: 100%; height: 100%; display: block; }
-  .ab-name { font-size: 28px; font-weight: 500; color: var(--color-text-primary); font-family: var(--font-serif); margin: 0 0 4px; line-height: 1.1; }
+  .ab-hero {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+    background: var(--color-background-secondary);
+  }
+  .ab-hero-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
+  }
+  .ab-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right,
+      rgba(250, 246, 238, 0.95) 0%,
+      rgba(250, 246, 238, 0.78) 28%,
+      rgba(250, 246, 238, 0.30) 55%,
+      rgba(250, 246, 238, 0) 75%);
+    pointer-events: none;
+  }
+  .ab-hero-text {
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    max-width: 60%;
+  }
+  .ab-name { font-size: 30px; font-weight: 500; color: var(--color-text-primary); font-family: var(--font-serif); margin: 0 0 6px; line-height: 1.1; }
   .ab-role { font-size: 13px; color: var(--color-text-secondary); }
+
+  @media (max-width: 600px) {
+    .ab-hero { height: 220px; }
+    .ab-hero-text { left: 20px; max-width: 70%; }
+    .ab-name { font-size: 24px; }
+  }
+  .dark .ab-hero::after {
+    background: linear-gradient(to right,
+      rgba(0,0,0,0.65) 0%,
+      rgba(0,0,0,0.40) 28%,
+      rgba(0,0,0,0.15) 55%,
+      rgba(0,0,0,0) 75%);
+  }
+  .dark .ab-name { color: #F5EFE6; }
+  .dark .ab-role { color: #D6C9B0; }
 
   .ab-headline { font-size: 20px; font-weight: 500; color: var(--color-text-primary); font-family: var(--font-serif); line-height: 1.6; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
   .ab-headline em { font-style: normal; color: #1a56db; }
@@ -89,43 +135,20 @@
   }
   .dark .ab-headline em { color: #7da9ff; }
 
-  /* Mobile */
+  /* Mobile — contact row stacks */
   @media (max-width: 600px) {
-    .ab-hero { flex-direction: column-reverse; align-items: flex-start; }
     .ab-contact { flex-direction: column; align-items: flex-start; }
   }
 </style>
 
 <div class="ab">
 
-  {{/* HERO */}}
+  {{/* HERO — full-width banner with text overlay on left */}}
   <div class="ab-hero">
-    <div>
+    <img class="ab-hero-img" src="/img/avatar.png" alt="{{ if $zh }}黄溯萍{{ else }}NG SU PING{{ end }}">
+    <div class="ab-hero-text">
       <h1 class="ab-name">{{ if $zh }}黄溯萍{{ else }}NG SU PING{{ end }}</h1>
       <div class="ab-role">{{ if $zh }}商业分析师 · AI 工具实践者 · 北京{{ else }}Business Analyst · AI tinkerer · Beijing{{ end }}</div>
-    </div>
-    <div class="ab-av">
-      <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
-        <rect width="72" height="72" fill="#E8DDD0"/>
-        <ellipse cx="36" cy="42" rx="26" ry="30" fill="#3D2B1F"/>
-        <rect x="10" y="38" width="10" height="28" rx="5" fill="#3D2B1F"/>
-        <rect x="52" y="38" width="10" height="28" rx="5" fill="#3D2B1F"/>
-        <ellipse cx="36" cy="36" rx="20" ry="21" fill="#F0D9BC"/>
-        <ellipse cx="36" cy="22" rx="22" ry="14" fill="#3D2B1F"/>
-        <ellipse cx="22" cy="30" rx="8" ry="6" fill="#3D2B1F"/>
-        <ellipse cx="50" cy="30" rx="8" ry="6" fill="#3D2B1F"/>
-        <rect x="20" y="31" width="13" height="9" rx="3.5" fill="none" stroke="#8B6F5C" stroke-width="1.5"/>
-        <rect x="39" y="31" width="13" height="9" rx="3.5" fill="none" stroke="#8B6F5C" stroke-width="1.5"/>
-        <line x1="33" y1="35" x2="39" y2="35" stroke="#8B6F5C" stroke-width="1.2"/>
-        <ellipse cx="26" cy="35" rx="3" ry="3.5" fill="#3D2B1F"/>
-        <ellipse cx="46" cy="35" rx="3" ry="3.5" fill="#3D2B1F"/>
-        <circle cx="27.2" cy="33.8" r="1" fill="white"/>
-        <circle cx="47.2" cy="33.8" r="1" fill="white"/>
-        <path d="M30 47 Q36 52 42 47" stroke="#C49070" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <ellipse cx="24" cy="44" rx="5" ry="3" fill="#E8A090" opacity="0.2"/>
-        <ellipse cx="48" cy="44" rx="5" ry="3" fill="#E8A090" opacity="0.2"/>
-        <path d="M10 56 Q14 52 26 51 L36 54 L46 51 Q58 52 62 56 L64 72 L8 72Z" fill="#C9B99A"/>
-      </svg>
     </div>
   </div>
 

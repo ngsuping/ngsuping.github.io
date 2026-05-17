@@ -4,117 +4,75 @@
 <div class="max-w-prose">
 
   {{/* Page heading */}}
-  <h1 class="mt-0 text-2xl font-medium">{{ .Title }}</h1>
+  <h1 class="mt-0 text-2xl font-medium text-neutral-900 dark:text-neutral-100">
+    {{ .Title }}
+  </h1>
   {{ with .Description }}
-    <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1 mb-8">{{ . }}</p>
+    <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-10">{{ . }}</p>
   {{ else }}
-    <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1 mb-8">
-      {{ if $zh }}学习记录 · 按系列整理，点击展开查看该系列的所有文章{{ else }}Learning notes · grouped by series, click to expand{{ end }}
+    <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-10">
+      {{ if $zh }}学习记录 · 按系列整理{{ else }}Learning notes · grouped by series{{ end }}
     </p>
   {{ end }}
 
-  {{/* ── Collect all series ── */}}
+  {{/* ── Series cards ── */}}
   {{ $allSeries := site.Taxonomies.series }}
 
   {{ if $allSeries }}
-    <div class="series-list space-y-3">
+    <div class="flex flex-col gap-3">
 
-      {{ $first := true }}
       {{ range $seriesName, $seriesPages := $allSeries }}
         {{ $termObj := site.GetPage (printf "series/%s" $seriesName) }}
-        {{ $count := len $seriesPages }}
+        {{ $sorted := $termObj.Pages.ByDate.Reverse }}
+        {{ $count := len $sorted }}
 
-        {{/* Pick an icon key by matching the series slug */}}
-        {{ $iconKey := "notebook" }}
+        {{/* Series emoji based on slug */}}
+        {{ $emoji := "📓" }}
         {{ if findRE "ai.*data|data.*ai" (lower $seriesName) }}
-          {{ $iconKey = "robot" }}
-        {{ else if findRE "everyone|入门|通俗" (lower $seriesName) }}
-          {{ $iconKey = "bulb" }}
+          {{ $emoji = "🤖" }}
+        {{ else if findRE "everyone|入门|通俗|basics" (lower $seriesName) }}
+          {{ $emoji = "💡" }}
         {{ else if findRE "数据|sql|python|data" (lower $seriesName) }}
-          {{ $iconKey = "chart" }}
+          {{ $emoji = "📊" }}
         {{ end }}
 
-        <div class="series-card border border-neutral-200 dark:border-neutral-700 rounded-xl overflow-hidden bg-white dark:bg-neutral-900"
-             x-data="{ open: {{ if $first }}true{{ else }}false{{ end }} }">
+        <div class="border border-neutral-200 dark:border-neutral-700
+                    rounded-2xl overflow-hidden
+                    hover:border-neutral-300 dark:hover:border-neutral-600
+                    transition-colors duration-150">
 
-          {{/* Series header (clickable) */}}
-          <button
-            @click="open = !open"
-            class="series-header w-full flex items-center gap-3 px-4 py-3.5 text-left
-                   hover:bg-neutral-50 dark:hover:bg-neutral-800
-                   transition-colors duration-150">
-
-            {{/* Icon badge */}}
-            <div class="series-icon flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center
-                        bg-primary-50 dark:bg-primary-900 text-primary-700 dark:text-primary-300">
-              {{ if eq $iconKey "robot" }}
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="4" y="6" width="12" height="10" rx="2"/>
-                  <circle cx="8" cy="11" r="1" fill="currentColor"/>
-                  <circle cx="12" cy="11" r="1" fill="currentColor"/>
-                  <path d="M10 6V3 M8 3h4 M3 11h1 M16 11h1"/>
-                </svg>
-              {{ else if eq $iconKey "bulb" }}
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10 2a5 5 0 0 0-3 9c1 1 1 2 1 3h4c0-1 0-2 1-3a5 5 0 0 0-3-9z"/>
-                  <path d="M8 16h4 M9 18h2"/>
-                </svg>
-              {{ else if eq $iconKey "chart" }}
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                  <rect x="3" y="10" width="3" height="7" rx="0.5"/>
-                  <rect x="8.5" y="6" width="3" height="11" rx="0.5"/>
-                  <rect x="14" y="3" width="3" height="14" rx="0.5"/>
-                </svg>
-              {{ else }}
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 3h10v14H5z"/>
-                  <path d="M5 7h10 M5 11h10 M8 3v14"/>
-                </svg>
-              {{ end }}
-            </div>
-
-            {{/* Series name + description */}}
-            <div class="flex-1 min-w-0">
-              <div class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                {{ $termObj.Title | default ($seriesName | humanize | title) }}
-              </div>
-              {{ with $termObj.Description }}
-                <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5 truncate">
-                  {{ . }}
+          {{/* Series header */}}
+          <div class="flex items-start justify-between gap-3 px-5 py-4">
+            <div class="flex items-start gap-3">
+              <span class="text-xl leading-none mt-0.5">{{ $emoji }}</span>
+              <div>
+                <div class="text-sm font-medium text-neutral-900 dark:text-neutral-100 leading-snug">
+                  {{ $termObj.Title | default ($seriesName | humanize | title) }}
                 </div>
-              {{ end }}
+                {{ with $termObj.Description }}
+                  <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1 leading-relaxed">
+                    {{ . }}
+                  </div>
+                {{ end }}
+              </div>
             </div>
+            <span class="text-xs text-neutral-400 dark:text-neutral-500 whitespace-nowrap mt-0.5 flex-shrink-0">
+              {{ $count }} {{ if $zh }}篇{{ else }}post{{ if ne $count 1 }}s{{ end }}{{ end }}
+            </span>
+          </div>
 
-            {{/* Count + chevron */}}
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <span class="text-xs text-neutral-400 dark:text-neutral-500">
-                {{ $count }} {{ if $zh }}篇{{ else }}post{{ if ne $count 1 }}s{{ end }}{{ end }}
-              </span>
-              <span class="text-neutral-400 transition-transform duration-200"
-                    :class="open ? 'rotate-180' : ''">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="5 8 10 13 15 8"/>
-                </svg>
-              </span>
-            </div>
-          </button>
-
-          {{/* Posts list (expand/collapse) */}}
-          <div x-show="open"
-               x-transition:enter="transition-all duration-200 ease-out"
-               x-transition:enter-start="opacity-0 -translate-y-1"
-               x-transition:enter-end="opacity-100 translate-y-0"
-               class="border-t border-neutral-100 dark:border-neutral-800">
-
-            {{ $sorted := $termObj.Pages.ByDate.Reverse }}
+          {{/* Articles — newest first */}}
+          <div class="border-t border-neutral-100 dark:border-neutral-800">
             {{ range $i, $page := $sorted }}
               <a href="{{ $page.RelPermalink }}"
-                 class="post-row flex items-baseline justify-between gap-4
-                        px-4 py-3 pl-16
-                        {{ if not (eq (add $i 1) $count) }}border-b border-neutral-100 dark:border-neutral-800{{ end }}
-                        hover:bg-neutral-50 dark:hover:bg-neutral-800
+                 class="flex items-baseline justify-between gap-4
+                        px-5 py-3 pl-12
+                        {{ if not (eq (add $i 1) $count) }}
+                          border-b border-neutral-100 dark:border-neutral-800
+                        {{ end }}
+                        hover:bg-neutral-50 dark:hover:bg-neutral-800/60
                         transition-colors duration-100 no-underline group">
-                <span class="text-sm text-neutral-800 dark:text-neutral-200
+                <span class="text-sm text-neutral-700 dark:text-neutral-300
                              group-hover:text-primary-600 dark:group-hover:text-primary-400
                              transition-colors leading-snug flex-1">
                   {{ $page.Title }}
@@ -124,21 +82,17 @@
                 </span>
               </a>
             {{ end }}
-
           </div>
+
         </div>
-        {{ $first = false }}
       {{ end }}
 
     </div>
 
   {{ else }}
-
-    {{/* Fallback: no series yet */}}
-    <p class="text-neutral-500 dark:text-neutral-400 text-sm">
+    <p class="text-sm text-neutral-500 dark:text-neutral-400">
       {{ if $zh }}还没有笔记，敬请期待。{{ else }}No notes yet — coming soon.{{ end }}
     </p>
-
   {{ end }}
 
 </div>
