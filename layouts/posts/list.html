@@ -62,11 +62,11 @@
           </div>
 
           {{/* Articles — newest first */}}
-          <div class="border-t border-neutral-100 dark:border-neutral-800">
+          <div class="border-t border-neutral-200 dark:border-neutral-700">
             {{ range $i, $page := $sorted }}
               <a href="{{ $page.RelPermalink }}"
                  class="flex items-baseline justify-between gap-4
-                        px-5 py-3 pl-12
+                        px-5 py-3 pl-14
                         {{ if not (eq (add $i 1) $count) }}
                           border-b border-neutral-100 dark:border-neutral-800
                         {{ end }}
